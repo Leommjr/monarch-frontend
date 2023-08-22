@@ -2,14 +2,11 @@ import SwiftUI
 import MapKit
 import CoreLocation
 
-let locations = [
-    Location(name: "Reitoria UFU", coordinate: CLLocationCoordinate2D(latitude: -18.9190014,longitude: -48.2621052), description: "", type: "pontoEvento", image: "", time: 0, user: ""),
-    Location(name: "Bloco 1B", coordinate: CLLocationCoordinate2D(latitude: -18.91848795116736,longitude: -48.259578012627536), description: "", type: "pontoEncontro", image: "", time: 0, user: "")
-]
-
+ 
 struct MapView: View {
+    @StateObject var viewModel: ViewModel = ViewModel()
     @State var region = MKCoordinateRegion(
-        center: locations[0].coordinate,
+        center: CLLocationCoordinate2D(latitude: -18.9190014,longitude: -48.2621052),
         span: MKCoordinateSpan(latitudeDelta: 0.003, longitudeDelta: 0.003))
     
     @State var sheetEvent = false
@@ -37,16 +34,16 @@ struct MapView: View {
                             }.sheet(isPresented: $sheetList){
                                 
                                 ScrollView(.vertical){
-                                    ForEach(locations) { location in
+                                    ForEach(viewModel.locations) { location in
                                         Button(){
-                                            region.center = location.coordinate
+                                            region.center = CLLocationCoordinate2D(latitude: location.localization!.x!,longitude: location.localization!.y!)
                                             sheetList = false
                                             switch location.type {
-                                            case "pontoEvento":
+                                            case TipoPonto.pontoEvento:
                                                 sheetEvent = true
-                                            case "pontoEncontro":
+                                            case TipoPonto.pontoEncontro:
                                                 sheetEncontro = true
-                                            case "pontoFixo":
+                                            case TipoPonto.pontoFixo:
                                                 sheetFixo = true
                                             default:
                                                 sheetList = true
@@ -56,7 +53,7 @@ struct MapView: View {
                                                 Image("location-dot-solid")
                                                     .resizable()
                                                     .frame(width: 50, height: 50)
-                                                Text(location.name)
+                                                Text(location.name!)
                                                 Spacer()
                                             }
                                         }
@@ -68,11 +65,11 @@ struct MapView: View {
                     }
                 }
                 .ignoresSafeArea()
-                Map(coordinateRegion: $region, annotationItems: locations){location in
+                Map(coordinateRegion: $region, annotationItems: viewModel.locations){location in
                     
-                    MapAnnotation(coordinate: location.coordinate){
+                    MapAnnotation(coordinate: CLLocationCoordinate2D(latitude: location.localization!.x!,longitude: location.localization!.y!)){
                         switch location.type {
-                        case "pontoEncontro":
+                        case TipoPonto.pontoEncontro:
                             Button {
                                 sheetEncontro = true
                             } label: {
@@ -81,7 +78,7 @@ struct MapView: View {
                             .sheet(isPresented: $sheetEncontro){
                                 EncontroView().presentationDetents([.height(200),.medium,.large]).presentationDragIndicator(.automatic)
                             }
-                        case "pontoEvento":
+                        case TipoPonto.pontoEvento:
                             Button {
                                 sheetEvent = true
                             } label: {
@@ -93,7 +90,7 @@ struct MapView: View {
                             .sheet(isPresented: $sheetEvent){
                                 EventoView().presentationDetents([.height(200),.medium,.large]).presentationDragIndicator(.automatic)
                             }
-                        case "pontoFixo":
+                        case TipoPonto.pontoFixo:
                             Button {
                                 sheetFixo = true
                             } label: {
@@ -109,6 +106,8 @@ struct MapView: View {
                         
                     }
                 }
+            }.task{
+                await viewModel.getLocations()
             }
             
         }
