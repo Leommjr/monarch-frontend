@@ -2,11 +2,16 @@ import SwiftUI
 import MapKit
 import CoreLocation
 
- 
+let locations = [
+    Location(name: "Reitoria UFU", coordinate: CLLocationCoordinate2D(latitude: -18.9190014,longitude: -48.2621052), description: "", type: "pontoEvento", image: "", time: 0, user: ""),
+    Location(name: "Bloco 1B", coordinate: CLLocationCoordinate2D(latitude: -18.91848795116736,longitude: -48.259578012627536), description: "", type: "pontoEncontro", image: "", time: 0, user: "Bruno")
+]
+
 struct MapView: View {
-    @StateObject var viewModel: ViewModel = ViewModel()
+    @StateObject var locationManager = LocationManager()
+    
     @State var region = MKCoordinateRegion(
-        center: CLLocationCoordinate2D(latitude: -18.9190014,longitude: -48.2621052),
+        center: locations[0].coordinate,
         span: MKCoordinateSpan(latitudeDelta: 0.003, longitudeDelta: 0.003))
     
     @State var sheetEvent = false
@@ -34,16 +39,16 @@ struct MapView: View {
                             }.sheet(isPresented: $sheetList){
                                 
                                 ScrollView(.vertical){
-                                    ForEach(viewModel.locations) { location in
+                                    ForEach(locations) { location in
                                         Button(){
-                                            region.center = CLLocationCoordinate2D(latitude: location.localization!.x!,longitude: location.localization!.y!)
+                                            region.center = location.coordinate
                                             sheetList = false
                                             switch location.type {
-                                            case TipoPonto.pontoEvento:
+                                            case "pontoEvento":
                                                 sheetEvent = true
-                                            case TipoPonto.pontoEncontro:
+                                            case "pontoEncontro":
                                                 sheetEncontro = true
-                                            case TipoPonto.pontoFixo:
+                                            case "pontoFixo":
                                                 sheetFixo = true
                                             default:
                                                 sheetList = true
@@ -53,7 +58,7 @@ struct MapView: View {
                                                 Image("location-dot-solid")
                                                     .resizable()
                                                     .frame(width: 50, height: 50)
-                                                Text(location.name!)
+                                                Text(location.name)
                                                 Spacer()
                                             }
                                         }
@@ -64,21 +69,21 @@ struct MapView: View {
                             }
                     }
                 }
-                .ignoresSafeArea()
-                Map(coordinateRegion: $region, annotationItems: viewModel.locations){location in
+                
+                Map(coordinateRegion: $region, showsUserLocation: true, annotationItems: locations){location in
                     
-                    MapAnnotation(coordinate: CLLocationCoordinate2D(latitude: location.localization!.x!,longitude: location.localization!.y!)){
+                    MapAnnotation(coordinate: location.coordinate){
                         switch location.type {
-                        case TipoPonto.pontoEncontro:
+                        case "pontoEncontro":
                             Button {
                                 sheetEncontro = true
                             } label: {
                                 Image(systemName: "pin.fill")
                             }
                             .sheet(isPresented: $sheetEncontro){
-                                EncontroView().presentationDetents([.height(200),.medium,.large]).presentationDragIndicator(.automatic)
+                                EncontroView(location: location).presentationDetents([.height(400),.medium,.large]).presentationDragIndicator(.automatic)
                             }
-                        case TipoPonto.pontoEvento:
+                        case "pontoEvento":
                             Button {
                                 sheetEvent = true
                             } label: {
@@ -88,16 +93,16 @@ struct MapView: View {
                                     .scaledToFit()
                             }
                             .sheet(isPresented: $sheetEvent){
-                                EventoView().presentationDetents([.height(200),.medium,.large]).presentationDragIndicator(.automatic)
+                                EventoView(location: location).presentationDetents([.height(400),.medium,.large]).presentationDragIndicator(.automatic)
                             }
-                        case TipoPonto.pontoFixo:
+                        case "pontoFixo":
                             Button {
                                 sheetFixo = true
                             } label: {
                                 Image(systemName: "pin.fill")
                             }
                             .sheet(isPresented: $sheetFixo){
-                                FixoView().presentationDetents([.height(200),.medium,.large]).presentationDragIndicator(.automatic)
+                                FixoView(location: location).presentationDetents([.height(400),.medium,.large]).presentationDragIndicator(.automatic)
                             }
                             
                         default:
@@ -106,10 +111,22 @@ struct MapView: View {
                         
                     }
                 }
-            }.task{
-                await viewModel.getLocations()
+                
             }
-            
+            HStack{
+                Spacer()
+                VStack{
+                    Spacer()
+                    Button(){
+                        region = locationManager.userRegion
+                    } label: {
+                        Image(systemName: "mappin.circle.fill")
+                            .resizable()
+                            .frame(width: 50, height: 50)
+                            .padding()
+                    }
+                }
+            }
         }
     }
 }

@@ -1,10 +1,3 @@
-//
-//  ContentView.swift
-//  monarch
-//
-//  Created by Student06 on 21/08/23.
-//
-
 import SwiftUI
 import UIKit
 
@@ -16,7 +9,6 @@ struct ContentView: View {
                 .tabItem(){
                     Label("", systemImage: "house")
                 }
-            
             
         }
         .onAppear(){
