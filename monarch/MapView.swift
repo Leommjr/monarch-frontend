@@ -14,19 +14,42 @@ struct MapView: View {
     @State var sheetEncontro = false
     @State var sheetFixo = false
     @State var sheetList = false
+
+    @State var pontoEncontroFilter = false;
+    @State var pontoFixoFilter = false;
+    @State var pontoEventoFilter = false;
+
+    @State var searchText = ""
+
+    var searchResults : [Location]{
+        if searchText.isEmpty{
+            return locations
+        }
+        else{
+            return
+                locations.filter{($0.name.lowercased().contains(searchText.lowercased())
+                              || $0.type.lowercased().contains(searchText.lowercased()))
+            }
+        }
+    }
     
     var body: some View {
-        ZStack{
+        NavigationStack{
             VStack{
                 ZStack{
                     Rectangle()
-                        .ignoresSafeArea()
-                        .frame(height: 50)
-                        .foregroundColor(.blue)
+                        .foregroundColor(.gray.opacity(0.15))
+                        .cornerRadius(10)
+                        .frame(width: 370, height: 60)
                     
                     HStack(){
-                        Image(systemName: "magnifyingglass")
-                            .padding(.horizontal)
+                        NavigationLink(destination: SearchView(_search: searchResults, _text: $searchText, _pontoEncontroFilter: $pontoEncontroFilter, _pontoFixoFilter: $pontoFixoFilter, _pontoEventoFilter: $pontoEventoFilter)){
+                            Image(systemName: "magnifyingglass")
+                                .foregroundColor(.black)
+                                .padding(.leading)
+                        }
+                        .accentColor(.black)
+
                         Spacer()
                         Image(systemName: "list.dash")
                             .padding(.horizontal)
