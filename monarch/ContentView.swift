@@ -10,16 +10,19 @@ import UIKit
 
 struct ContentView: View {
     var body: some View {
-        TabView{
-            NavigationStack{
-                MapView()
-                    .tabItem(){
-                        Label("", systemImage: "house")
-                    }
-            }.toolbarBackground(Color.gray, for: .tabBar)
+        TabView(){
+            
+            MapView()
+                .tabItem(){
+                    Label("", systemImage: "house")
+                }
+            
+            
         }
-        .tint(.black)
-
+        .onAppear(){
+            UITabBar.appearance().backgroundColor = .blue
+        }
+        .tint(.white)
     }
 }
 
