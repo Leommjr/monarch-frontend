@@ -23,12 +23,12 @@ struct MapView: View {
 
     var searchResults : [Location]{
         if searchText.isEmpty{
-            return locations
+            return viewModel.locations
         }
         else{
             return
-                locations.filter{($0.name.lowercased().contains(searchText.lowercased())
-                              || $0.type.lowercased().contains(searchText.lowercased()))
+            viewModel.locations.filter{($0.name!.lowercased().contains(searchText.lowercased())
+                                        || $0.type.rawValue.lowercased().contains(searchText.lowercased()))
             }
         }
     }

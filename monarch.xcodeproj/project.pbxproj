@@ -16,6 +16,8 @@
 		F4ABB3A82A93E0670054B84B /* FixoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4ABB3A72A93E0670054B84B /* FixoView.swift */; };
 		F4ABB3AA2A93E0750054B84B /* EventoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4ABB3A92A93E0750054B84B /* EventoView.swift */; };
 		FBDCE4FB2A9521F600F33434 /* ViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBDCE4FA2A9521F600F33434 /* ViewModel.swift */; };
+		FBDCE5012A96773200F33434 /* LocationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBDCE5002A96773200F33434 /* LocationManager.swift */; };
+		FBDCE5032A96776000F33434 /* SearchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBDCE5022A96776000F33434 /* SearchView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -29,6 +31,8 @@
 		F4ABB3A72A93E0670054B84B /* FixoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FixoView.swift; sourceTree = "<group>"; };
 		F4ABB3A92A93E0750054B84B /* EventoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventoView.swift; sourceTree = "<group>"; };
 		FBDCE4FA2A9521F600F33434 /* ViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewModel.swift; sourceTree = "<group>"; };
+		FBDCE5002A96773200F33434 /* LocationManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocationManager.swift; sourceTree = "<group>"; };
+		FBDCE5022A96776000F33434 /* SearchView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SearchView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -61,6 +65,8 @@
 		F4ABB3922A93C9010054B84B /* monarch */ = {
 			isa = PBXGroup;
 			children = (
+				FBDCE5022A96776000F33434 /* SearchView.swift */,
+				FBDCE5002A96773200F33434 /* LocationManager.swift */,
 				F4ABB3932A93C9010054B84B /* monarchApp.swift */,
 				F4ABB3952A93C9010054B84B /* ContentView.swift */,
 				F4ABB3972A93C9020054B84B /* Assets.xcassets */,
@@ -153,9 +159,11 @@
 			buildActionMask = 2147483647;
 			files = (
 				F4ABB3A82A93E0670054B84B /* FixoView.swift in Sources */,
+				FBDCE5032A96776000F33434 /* SearchView.swift in Sources */,
 				F4ABB3962A93C9010054B84B /* ContentView.swift in Sources */,
 				F4ABB3A62A93E03D0054B84B /* EncontroView.swift in Sources */,
 				F4ABB3AA2A93E0750054B84B /* EventoView.swift in Sources */,
+				FBDCE5012A96773200F33434 /* LocationManager.swift in Sources */,
 				F4ABB3A22A93CA330054B84B /* MapView.swift in Sources */,
 				F4ABB3942A93C9010054B84B /* monarchApp.swift in Sources */,
 				FBDCE4FB2A9521F600F33434 /* ViewModel.swift in Sources */,
