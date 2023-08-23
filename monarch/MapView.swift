@@ -4,12 +4,10 @@ import CoreLocation
 
 let locations = [
     Location(name: "Reitoria UFU", coordinate: CLLocationCoordinate2D(latitude: -18.9190014,longitude: -48.2621052), description: "", type: "pontoEvento", image: "", time: 0, user: ""),
-    Location(name: "Bloco 1B", coordinate: CLLocationCoordinate2D(latitude: -18.91848795116736,longitude: -48.259578012627536), description: "", type: "pontoEncontro", image: "", time: 0, user: "Bruno")
+    Location(name: "Bloco 1B", coordinate: CLLocationCoordinate2D(latitude: -18.91848795116736,longitude: -48.259578012627536), description: "", type: "pontoEncontro", image: "", time: 0, user: "")
 ]
 
 struct MapView: View {
-    @StateObject var locationManager = LocationManager()
-    
     @State var region = MKCoordinateRegion(
         center: locations[0].coordinate,
         span: MKCoordinateSpan(latitudeDelta: 0.003, longitudeDelta: 0.003))
@@ -19,18 +17,40 @@ struct MapView: View {
     @State var sheetFixo = false
     @State var sheetList = false
     
+    @State var pontoEncontroFilter = false;
+    @State var pontoFixoFilter = false;
+    @State var pontoEventoFilter = false;
+    
+    @State var searchText = ""
+    
+    var searchResults : [Location]{
+        if searchText.isEmpty{
+            return locations
+        }
+        else{
+            return
+                locations.filter{($0.name.lowercased().contains(searchText.lowercased())
+                              || $0.type.lowercased().contains(searchText.lowercased()))
+            }
+        }
+    }
+    
     var body: some View {
-        ZStack{
+        NavigationStack{
             VStack{
                 ZStack{
                     Rectangle()
-                        .ignoresSafeArea()
-                        .frame(height: 50)
-                        .foregroundColor(.blue)
-                    
+                        .foregroundColor(.gray.opacity(0.15))
+                        .cornerRadius(10)
+                        .frame(width: 370, height: 60)
                     HStack(){
-                        Image(systemName: "magnifyingglass")
-                            .padding(.horizontal)
+                        NavigationLink(destination: SearchView(_search: searchResults, _text: $searchText, _pontoEncontroFilter: $pontoEncontroFilter, _pontoFixoFilter: $pontoFixoFilter, _pontoEventoFilter: $pontoEventoFilter)){
+                            Image(systemName: "magnifyingglass")
+                                .foregroundColor(.black)
+                                .padding(.leading)
+                        }
+                        .accentColor(.black)
+                        
                         Spacer()
                         Image(systemName: "list.dash")
                             .padding(.horizontal)
@@ -69,8 +89,7 @@ struct MapView: View {
                             }
                     }
                 }
-                
-                Map(coordinateRegion: $region, showsUserLocation: true, annotationItems: locations){location in
+                Map(coordinateRegion: $region, annotationItems: locations){location in
                     
                     MapAnnotation(coordinate: location.coordinate){
                         switch location.type {
@@ -81,7 +100,7 @@ struct MapView: View {
                                 Image(systemName: "pin.fill")
                             }
                             .sheet(isPresented: $sheetEncontro){
-                                EncontroView(location: location).presentationDetents([.height(400),.medium,.large]).presentationDragIndicator(.automatic)
+                                EncontroView().presentationDetents([.height(200),.medium,.large]).presentationDragIndicator(.automatic)
                             }
                         case "pontoEvento":
                             Button {
@@ -93,7 +112,7 @@ struct MapView: View {
                                     .scaledToFit()
                             }
                             .sheet(isPresented: $sheetEvent){
-                                EventoView(location: location).presentationDetents([.height(400),.medium,.large]).presentationDragIndicator(.automatic)
+                                EventoView().presentationDetents([.height(200),.medium,.large]).presentationDragIndicator(.automatic)
                             }
                         case "pontoFixo":
                             Button {
@@ -102,7 +121,7 @@ struct MapView: View {
                                 Image(systemName: "pin.fill")
                             }
                             .sheet(isPresented: $sheetFixo){
-                                FixoView(location: location).presentationDetents([.height(400),.medium,.large]).presentationDragIndicator(.automatic)
+                                FixoView().presentationDetents([.height(200),.medium,.large]).presentationDragIndicator(.automatic)
                             }
                             
                         default:
@@ -110,24 +129,10 @@ struct MapView: View {
                         }
                         
                     }
-                }
-                
+                }.ignoresSafeArea()
             }
-            HStack{
-                Spacer()
-                VStack{
-                    Spacer()
-                    Button(){
-                        region = locationManager.userRegion
-                    } label: {
-                        Image(systemName: "mappin.circle.fill")
-                            .resizable()
-                            .frame(width: 50, height: 50)
-                            .padding()
-                    }
-                }
-            }
-        }
+            
+        }.accentColor(.black)
     }
 }
 

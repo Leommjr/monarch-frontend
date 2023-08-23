@@ -1,20 +1,25 @@
+//
+//  ContentView.swift
+//  monarch
+//
+//  Created by Student06 on 21/08/23.
+//
+
 import SwiftUI
 import UIKit
 
 struct ContentView: View {
     var body: some View {
-        TabView(){
-            
-            MapView()
-                .tabItem(){
-                    Label("", systemImage: "house")
-                }
-            
+        TabView{
+            NavigationStack{
+                MapView()
+                    .tabItem(){
+                        Label("", systemImage: "house")
+                    }
+            }.toolbarBackground(Color.gray, for: .tabBar)
         }
-        .onAppear(){
-            UITabBar.appearance().backgroundColor = .blue
-        }
-        .tint(.white)
+        .tint(.black)
+
     }
 }
 

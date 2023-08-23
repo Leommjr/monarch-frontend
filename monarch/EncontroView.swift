@@ -8,18 +8,13 @@
 import SwiftUI
 
 struct EncontroView: View {
-    @State var location: Location
-    
     var body: some View {
-        VStack{
-            Text("Encontro")
-            Text("Criado por \(location.user)")
-        }
+        Text("Encontro")
     }
 }
 
 struct EncontroView_Previews: PreviewProvider {
     static var previews: some View {
-        MapView()
+        EncontroView()
     }
 }
