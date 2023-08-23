@@ -66,7 +66,7 @@ struct MapView: View {
                     }
                 }
                 .ignoresSafeArea()
-                Map(coordinateRegion: $region, showsUserLocation: true, annotationItems: locations){location in
+                Map(coordinateRegion: $region, showsUserLocation: true, annotationItems: viewModel.locations){location in
                     
                     MapAnnotation(coordinate: CLLocationCoordinate2D(latitude: location.localization!.x!,longitude: location.localization!.y!)){
                         switch location.type {
