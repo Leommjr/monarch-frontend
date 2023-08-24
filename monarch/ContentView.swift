@@ -11,12 +11,10 @@ import UIKit
 struct ContentView: View {
     var body: some View {
         TabView{
-            NavigationStack{
-                MapView()
-                    .tabItem(){
-                        Label("", systemImage: "house")
-                    }
-            }.toolbarBackground(Color.gray, for: .tabBar)
+            MapView()
+                .tabItem(){
+                    Label("", systemImage: "house")
+                }
         }
         .tint(.black)
 
