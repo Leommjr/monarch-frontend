@@ -6,41 +6,62 @@
 //
 
 import SwiftUI
-import MapKit
 
 struct FixoView: View {
     @State var location: Location
+    @State var name: String = ""
+    @StateObject var viewModel: ViewModel = ViewModel()
     
     var body: some View {
-        VStack{
-            Image(systemName: "pencil.fill")
-                .resizable()
-                .scaledToFit()
-                .frame(width: 150)
-            Text("\(location.name ?? "")")
-                .font(.title)
-            Text("Criado por \(location.name ?? "")")
-                .font(.caption)
-            Spacer()
+        ZStack{
+            LinearGradient(gradient: Gradient(colors: [.blue,.white]), startPoint: .top, endPoint: .center).ignoresSafeArea()
             VStack{
-                Text("Tempo")
-                    .padding()
-                    .background(.white)
+                VStack{
+                    Image(systemName: "pencil")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 150)
+                        .padding()
+                    Text("\(location.name ?? "")")
+                        .font(.title)
+                        .fontWeight(.bold)
+                    Text("Criado por \(name)")
+                        .font(.caption)
+                    Spacer()
+                }
+                Spacer()
+                VStack{
+                    //Parte do EVENTO
+                    
+                    //FIM EVENTO
+                    Text("Categoria")
+                        .padding(10)
+                        .background(.purple)
+                        .foregroundColor(.white)
+                        .cornerRadius(50)
+                    VStack(alignment: .leading){
+                        HStack{
+                            Text("Descrição")
+                                .font(.title2)
+                                .fontWeight(.bold)
+                            Spacer()
+                        }
+                        Text("\(location.description!)")
+                        
+                    }
+                    .padding(10)
+                    .frame(width: 300.0)
+                    .background(.gray)
+                    .foregroundColor(.white)
                     .cornerRadius(20)
-                Text("Categoria")
-                    .background(.white)
-                    .cornerRadius(20)
-                Text("Descricao")
-                    .padding()
-                    .background(.white)
-                    .cornerRadius(20)
-            }
-            .padding()
-            .background(.gray)
-            .cornerRadius(20)
-            Spacer()
-            
+                    Spacer()
+                }
+            }.task{
+            await viewModel.getUserById(userId: location.creatorId!)
+            name = viewModel.user!.name!
+           }
         }
+        
     }
 }
 
