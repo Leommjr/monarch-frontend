@@ -4,7 +4,6 @@ import CoreLocation
 
 struct MapView: View {
     @StateObject var locationManager = LocationManager()
-    @State var tracking:MapUserTrackingMode = .follow
     
     @StateObject var viewModel: ViewModel = ViewModel()
     @State var region = MKCoordinateRegion(
@@ -15,10 +14,6 @@ struct MapView: View {
     @State var sheetEncontro = false
     @State var sheetFixo = false
     @State var sheetList = false
-
-    @State var pontoEncontroFilter = false;
-    @State var pontoFixoFilter = false;
-    @State var pontoEventoFilter = false;
 
     @State var searchText = ""
 
@@ -39,7 +34,7 @@ struct MapView: View {
             VStack{
                 ZStack{
                     
-                    Map(coordinateRegion: $region, showsUserLocation: true, userTrackingMode: $tracking, annotationItems: viewModel.locations){location in
+                    Map(coordinateRegion: $region, showsUserLocation: true, annotationItems: viewModel.locations){location in
                         
                         MapAnnotation(coordinate: CLLocationCoordinate2D(latitude: location.localization!.x!,longitude: location.localization!.y!)){
                             switch location.type {
@@ -47,10 +42,7 @@ struct MapView: View {
                                 Button {
                                     sheetEncontro = true
                                 } label: {
-                                    Image("butterfly")
-                                        .resizable()
-                                        .frame(width: 20,height: 20)
-                                        .scaledToFit()
+                                    Image(systemName: "pin.fill")
                                 }
                                 .sheet(isPresented: $sheetEncontro){
                                     EncontroView(location: location).presentationDetents([.height(400),.medium,.large]).presentationDragIndicator(.automatic)
@@ -59,9 +51,9 @@ struct MapView: View {
                                 Button {
                                     sheetEvent = true
                                 } label: {
-                                    Image("hibiscus")
+                                    Image("location-dot-solid")
                                         .resizable()
-                                        .frame(width: 20,height: 20)
+                                        .frame(width: 20,height: 30)
                                         .scaledToFit()
                                 }
                                 .sheet(isPresented: $sheetEvent){
@@ -71,10 +63,7 @@ struct MapView: View {
                                 Button {
                                     sheetFixo = true
                                 } label: {
-                                    Image("tree")
-                                        .resizable()
-                                        .frame(width: 30,height: 30)
-                                        .scaledToFit()
+                                    Image(systemName: "pin.fill")
                                 }
                                 .sheet(isPresented: $sheetFixo){
                                     FixoView(location: location).presentationDetents([.height(400),.medium,.large]).presentationDragIndicator(.automatic)
@@ -93,7 +82,7 @@ struct MapView: View {
                                 .foregroundColor(.white)
                                 .cornerRadius(10)
                             HStack{
-                                NavigationLink(destination: SearchView(_search: searchResults, _text: $searchText, _pontoEncontroFilter: $pontoEncontroFilter, _pontoFixoFilter: $pontoFixoFilter, _pontoEventoFilter: $pontoEventoFilter)){
+                                NavigationLink(destination: SearchView(_search: searchResults, _region: $region, _text: $searchText)){
                                     Image(systemName: "magnifyingglass")
                                         .foregroundColor(.black)
                                 }
@@ -109,7 +98,7 @@ struct MapView: View {
                             Button(){
                                 region = locationManager.userRegion
                             } label: {
-                                Image("location-crosshairs")
+                                Image(systemName: "mappin.circle.fill")
                                     .resizable()
                                     .frame(width: 50, height: 50)
                                     .padding()

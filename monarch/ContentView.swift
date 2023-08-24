@@ -7,17 +7,28 @@
 
 import SwiftUI
 import UIKit
+import CoreLocation
+import MapKit
 
 struct ContentView: View {
+    
+    
     var body: some View {
         TabView{
             MapView()
                 .tabItem(){
-                    Label("", systemImage: "house")
+                    Label("", systemImage: "map")
+                }
+            AddPointView()
+                .tabItem(){
+                    Label("", systemImage: "plus.app")
+                }
+            MapView()
+                .tabItem(){
+                    Label("", systemImage: "person")
                 }
         }
         .tint(.black)
-
     }
 }
 

@@ -70,7 +70,6 @@ struct Event: Codable {
 */
 class ViewModel : ObservableObject {
     @Published var locations: [Location] = []
-    @Published var user: User?
     
     func getLocations() async {
         guard let url = URL(string: "http://192.168.128.239:1880/locationstest") else {
@@ -82,23 +81,6 @@ class ViewModel : ObservableObject {
             if let decodedResponse = try? JSONDecoder().decode([Location].self, from: data) {
                 DispatchQueue.main.async {
                     self.locations = decodedResponse
-                }
-            }
-        } catch {
-            print("invalid data")
-        }
-    }
-    
-    func getUserById(userId: String) async {
-        guard let url = URL(string: "http://192.168.128.239:1880/userstest?id=\(userId)") else {
-            print("Invalid URL")
-            return
-        }
-        do {
-            let (data, _) = try await URLSession.shared.data(from: url)
-            if let decodedResponse = try? JSONDecoder().decode(User.self, from: data) {
-                DispatchQueue.main.async {
-                    self.user = decodedResponse
                 }
             }
         } catch {

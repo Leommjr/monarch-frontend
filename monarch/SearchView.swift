@@ -6,29 +6,14 @@
 //
 
 import SwiftUI
-
-struct iOSCheckboxToggleStyle: ToggleStyle {
-    func makeBody(configuration: Configuration) -> some View {
-        Button(action: {
-            
-            configuration.isOn.toggle()
-            
-        }, label: {
-            HStack {
-                Image(systemName: configuration.isOn ? "checkmark.square" : "square")
-                configuration.label
-            }.foregroundColor(.black)
-        })
-    }
-}
+import MapKit
+import CoreLocation
 
 struct SearchView: View {
     var _search : [Location]
-    @Binding var _text : String
+    @Binding var _region : MKCoordinateRegion
     
-    @Binding var _pontoEncontroFilter : Bool
-    @Binding var _pontoFixoFilter : Bool
-    @Binding var _pontoEventoFilter : Bool
+    @Binding var _text : String
     
     
     var body: some View {
@@ -48,6 +33,11 @@ struct SearchView: View {
         ScrollView{
             ForEach(_search) { location in
                 VStack(spacing: 10){
+                    Button(){
+                        _region = MKCoordinateRegion(center: CLLocationCoordinate2D(latitude: location.localization!.x!,longitude: location.localization!.y!), span: MKCoordinateSpan(latitudeDelta: 0.003, longitudeDelta: 0.003))
+                        
+                    }label: {
+                        
                         HStack{
                             Image(systemName: "mappin.and.ellipse")
                             Spacer()
@@ -55,17 +45,20 @@ struct SearchView: View {
                                 .padding(10)
                             Spacer()
                         }.background(Color.gray.opacity(0.15))
-                        .frame(width: 340.0, height: 30.0)
-                        .cornerRadius(10)
+                            .frame(width: 340.0, height: 30.0)
+                            .cornerRadius(10)
+                    }
+                    
                 }
             }
         }
     }
-}
-
-
-struct SearchView_Previews: PreviewProvider {
-    static var previews: some View {
-        MapView()
+    
+    
+    
+    struct SearchView_Previews: PreviewProvider {
+        static var previews: some View {
+            MapView()
+        }
     }
 }
