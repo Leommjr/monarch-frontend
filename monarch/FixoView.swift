@@ -9,6 +9,8 @@ import SwiftUI
 
 struct FixoView: View {
     @State var location: Location
+    @State var name: String = ""
+    @StateObject var viewModel: ViewModel = ViewModel()
     
     var body: some View {
         ZStack{
@@ -23,7 +25,7 @@ struct FixoView: View {
                     Text("\(location.name ?? "")")
                         .font(.title)
                         .fontWeight(.bold)
-                    Text("Criado por \(location.name ?? "")")
+                    Text("Criado por \(name)")
                         .font(.caption)
                     Spacer()
                 }
@@ -54,7 +56,10 @@ struct FixoView: View {
                     .cornerRadius(20)
                     Spacer()
                 }
-            }
+            }.task{
+            await viewModel.getUserById(userId: location.creatorId!)
+            name = viewModel.user!.name!
+           }
         }
         
     }
