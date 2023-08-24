@@ -9,6 +9,8 @@ import SwiftUI
 
 struct EventoView: View {
     @State var location: Location
+    @State var name: String = ""
+    @StateObject var viewModel: ViewModel = ViewModel()
     
     func dateTime(timestamp: Int64) -> String {
         var strDate = "undefined"
@@ -43,7 +45,7 @@ struct EventoView: View {
                     Text("\(location.name ?? "")")
                         .font(.title)
                         .fontWeight(.bold)
-                    Text("Criado por \(location.name ?? "")")
+                    Text("Criado por \(name)")
                         .font(.caption)
                     Spacer()
                 }
@@ -77,7 +79,10 @@ struct EventoView: View {
                     .cornerRadius(20)
                     Spacer()
                 }
-            }
+            }.task{
+            await viewModel.getUserById(userId: location.creatorId!)
+            name = viewModel.user!.name!
+          }
         }
     }
 }
