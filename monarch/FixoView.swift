@@ -67,6 +67,8 @@ struct FixoView: View {
 
 struct FixoView_Previews: PreviewProvider {
     static var previews: some View {
-        MapView()
+        MapView(region: MKCoordinateRegion(
+            center: CLLocationCoordinate2D(latitude: -18.9190014,longitude: -48.2621052),
+            span: MKCoordinateSpan(latitudeDelta: 0.003, longitudeDelta: 0.003)))
     }
 }

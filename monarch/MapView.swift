@@ -93,7 +93,7 @@ struct MapView: View {
                                 .foregroundColor(.white)
                                 .cornerRadius(10)
                             HStack{
-                                NavigationLink(destination: SearchView(_search: searchResults, _text: $searchText, _pontoEncontroFilter: $pontoEncontroFilter, _pontoFixoFilter: $pontoFixoFilter, _pontoEventoFilter: $pontoEventoFilter)){
+                                NavigationLink(destination: SearchView(_search: searchResults, _region: $region, _text: $searchText)){
                                     Image(systemName: "magnifyingglass")
                                         .foregroundColor(.black)
                                 }
