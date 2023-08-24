@@ -7,19 +7,28 @@
 
 import SwiftUI
 import UIKit
+import CoreLocation
+import MapKit
 
 struct ContentView: View {
+    
+    
     var body: some View {
         TabView{
-            NavigationStack{
-                MapView()
-                    .tabItem(){
-                        Label("", systemImage: "house")
-                    }
-            }.toolbarBackground(Color.gray, for: .tabBar)
+            MapView()
+                .tabItem(){
+                    Label("", systemImage: "map")
+                }
+            AddPointView()
+                .tabItem(){
+                    Label("", systemImage: "plus.app")
+                }
+            MapView()
+                .tabItem(){
+                    Label("", systemImage: "person")
+                }
         }
         .tint(.black)
-
     }
 }
 
