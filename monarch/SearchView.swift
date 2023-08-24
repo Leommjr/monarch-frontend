@@ -51,7 +51,7 @@ struct SearchView: View {
                         HStack{
                             Image(systemName: "mappin.and.ellipse")
                             Spacer()
-                            Text(location.name)
+                            Text(location.name!)
                                 .padding(10)
                             Spacer()
                         }.background(Color.gray.opacity(0.15))

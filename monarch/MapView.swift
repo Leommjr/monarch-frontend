@@ -2,115 +2,126 @@ import SwiftUI
 import MapKit
 import CoreLocation
 
-let locations = [
-    Location(name: "Reitoria UFU", coordinate: CLLocationCoordinate2D(latitude: -18.9190014,longitude: -48.2621052), description: "", type: "pontoEvento", image: "", time: 0, user: ""),
-    Location(name: "Bloco 1B", coordinate: CLLocationCoordinate2D(latitude: -18.91848795116736,longitude: -48.259578012627536), description: "", type: "pontoEncontro", image: "", time: 0, user: "")
-]
-
 struct MapView: View {
+    @StateObject var locationManager = LocationManager()
+    @State var tracking:MapUserTrackingMode = .follow
+    
+    @StateObject var viewModel: ViewModel = ViewModel()
     @State var region = MKCoordinateRegion(
-        center: locations[0].coordinate,
+        center: CLLocationCoordinate2D(latitude: -18.9190014,longitude: -48.2621052),
         span: MKCoordinateSpan(latitudeDelta: 0.003, longitudeDelta: 0.003))
     
     @State var sheetEvent = false
     @State var sheetEncontro = false
     @State var sheetFixo = false
     @State var sheetList = false
+
+    @State var pontoEncontroFilter = false;
+    @State var pontoFixoFilter = false;
+    @State var pontoEventoFilter = false;
+
+    @State var searchText = ""
+
+    var searchResults : [Location]{
+        if searchText.isEmpty{
+            return viewModel.locations
+        }
+        else{
+            return
+                viewModel.locations.filter{($0.name!.lowercased().contains(searchText.lowercased())
+                                        || $0.type.rawValue.lowercased().contains(searchText.lowercased()))
+            }
+        }
+    }
     
     var body: some View {
-        ZStack{
+        NavigationStack{
             VStack{
                 ZStack{
-                    Rectangle()
-                        .ignoresSafeArea()
-                        .frame(height: 50)
-                        .foregroundColor(.blue)
                     
-                    HStack(){
-                        Image(systemName: "magnifyingglass")
-                            .padding(.horizontal)
-                        Spacer()
-                        Image(systemName: "list.dash")
-                            .padding(.horizontal)
-                            .onTapGesture {
-                                sheetList = true
-                            }.sheet(isPresented: $sheetList){
-                                
-                                ScrollView(.vertical){
-                                    ForEach(locations) { location in
-                                        Button(){
-                                            region.center = location.coordinate
-                                            sheetList = false
-                                            switch location.type {
-                                            case "pontoEvento":
-                                                sheetEvent = true
-                                            case "pontoEncontro":
-                                                sheetEncontro = true
-                                            case "pontoFixo":
-                                                sheetFixo = true
-                                            default:
-                                                sheetList = true
-                                            }
-                                        } label: {
-                                            HStack{
-                                                Image("location-dot-solid")
-                                                    .resizable()
-                                                    .frame(width: 50, height: 50)
-                                                Text(location.name)
-                                                Spacer()
-                                            }
-                                        }
-                                        .padding()
-                                    }
-                                    
+                    Map(coordinateRegion: $region, showsUserLocation: true, userTrackingMode: $tracking, annotationItems: viewModel.locations){location in
+                        
+                        MapAnnotation(coordinate: CLLocationCoordinate2D(latitude: location.localization!.x!,longitude: location.localization!.y!)){
+                            switch location.type {
+                            case TipoPonto.pontoEncontro:
+                                Button {
+                                    sheetEncontro = true
+                                } label: {
+                                    Image("butterfly")
+                                        .resizable()
+                                        .frame(width: 20,height: 20)
+                                        .scaledToFit()
                                 }
-                            }
-                    }
-                }
-                .ignoresSafeArea()
-                Map(coordinateRegion: $region, annotationItems: locations){location in
-                    
-                    MapAnnotation(coordinate: location.coordinate){
-                        switch location.type {
-                        case "pontoEncontro":
-                            Button {
-                                sheetEncontro = true
-                            } label: {
-                                Image(systemName: "pin.fill")
-                            }
-                            .sheet(isPresented: $sheetEncontro){
-                                EncontroView().presentationDetents([.height(200),.medium,.large]).presentationDragIndicator(.automatic)
-                            }
-                        case "pontoEvento":
-                            Button {
-                                sheetEvent = true
-                            } label: {
-                                Image("location-dot-solid")
-                                    .resizable()
-                                    .frame(width: 20,height: 30)
-                                    .scaledToFit()
-                            }
-                            .sheet(isPresented: $sheetEvent){
-                                EventoView().presentationDetents([.height(200),.medium,.large]).presentationDragIndicator(.automatic)
-                            }
-                        case "pontoFixo":
-                            Button {
-                                sheetFixo = true
-                            } label: {
-                                Image(systemName: "pin.fill")
-                            }
-                            .sheet(isPresented: $sheetFixo){
-                                FixoView().presentationDetents([.height(200),.medium,.large]).presentationDragIndicator(.automatic)
+                                .sheet(isPresented: $sheetEncontro){
+                                    EncontroView(location: location).presentationDetents([.height(400),.medium,.large]).presentationDragIndicator(.automatic)
+                                }
+                            case TipoPonto.pontoEvento:
+                                Button {
+                                    sheetEvent = true
+                                } label: {
+                                    Image("hibiscus")
+                                        .resizable()
+                                        .frame(width: 20,height: 20)
+                                        .scaledToFit()
+                                }
+                                .sheet(isPresented: $sheetEvent){
+                                    EventoView(location: location).presentationDetents([.height(400),.medium,.large]).presentationDragIndicator(.automatic)
+                                }
+                            case TipoPonto.pontoFixo:
+                                Button {
+                                    sheetFixo = true
+                                } label: {
+                                    Image("tree")
+                                        .resizable()
+                                        .frame(width: 30,height: 30)
+                                        .scaledToFit()
+                                }
+                                .sheet(isPresented: $sheetFixo){
+                                    FixoView(location: location).presentationDetents([.height(400),.medium,.large]).presentationDragIndicator(.automatic)
+                                }
+                                
+                            default:
+                                Text("")
                             }
                             
-                        default:
-                            Text("")
                         }
-                        
                     }
+                    VStack{
+                        ZStack{
+                            Rectangle()
+                                .frame(width: 400, height: 50)
+                                .foregroundColor(.white)
+                                .cornerRadius(10)
+                            HStack{
+                                NavigationLink(destination: SearchView(_search: searchResults, _text: $searchText, _pontoEncontroFilter: $pontoEncontroFilter, _pontoFixoFilter: $pontoFixoFilter, _pontoEventoFilter: $pontoEventoFilter)){
+                                    Image(systemName: "magnifyingglass")
+                                        .foregroundColor(.black)
+                                }
+                                
+                            }
+                        }
+                        Spacer()
+                    }
+                    HStack{
+                        Spacer()
+                        VStack{
+                            Spacer()
+                            Button(){
+                                region = locationManager.userRegion
+                            } label: {
+                                Image("location-crosshairs")
+                                    .resizable()
+                                    .frame(width: 50, height: 50)
+                                    .padding()
+                            }
+                        }
+                    }
+                    
+                }.task{
+                    await viewModel.getLocations()
                 }
+                
             }
-            
         }
     }
 }

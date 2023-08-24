@@ -72,7 +72,7 @@ class ViewModel : ObservableObject {
     @Published var locations: [Location] = []
     
     func getLocations() async {
-        guard let url = URL(string: "http://127.0.0.1:1880/locationstest") else {
+        guard let url = URL(string: "http://192.168.128.239:1880/locationstest") else {
             print("Invalid URL")
             return
         }
